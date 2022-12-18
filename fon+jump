@@ -27,7 +27,7 @@ class Hero(pygame.sprite.Sprite):
         super(Hero, self).__init__()
         self.image = load_image('nagito.png')
         self.rect = self.image.get_rect()
-        self.rect.top = 502
+        self.rect.top = 400
         self.dx = 4
         self.dy = 4
 
@@ -49,7 +49,7 @@ class Hero(pygame.sprite.Sprite):
 
 def main():
     pygame.init()
-    size = 1200, 600
+    size = 1000, 500
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption('Нагито двигается!')
     screen.blit(fon, (0, 0))
@@ -98,7 +98,7 @@ def main():
             falling = True
         if falling:
             nagito.down()
-        if nagito.rect.top > 500:
+        if nagito.rect.top > 400:
             falling = False
 
         screen.blit(fon, (0, 0))
