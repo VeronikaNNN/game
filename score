@@ -118,11 +118,11 @@ if __name__ == '__main__':
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 motion = 'UP'
-                scores += 1
 
             if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
                 motion = 'STOP'
                 falling = True
+                scores += 1
 
         if nagito.rect.top >= 300:
             if not falling and motion == 'UP':
