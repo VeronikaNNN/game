@@ -40,8 +40,6 @@ class Hero(pygame.sprite.Sprite):
         self.rect.top += self.dx
 
 
-
-
 def terminate():
     pygame.quit()
     sys.exit()
@@ -55,7 +53,9 @@ def draw_start(color):
     intro_rect.x = 400
     screen.blit(string_rendered, intro_rect)
 
+
 x_pos = 1000
+
 
 def start_screen():
     intro_text = ['ВЕСЁЛЫЕ СТАРТЫ', '',
@@ -110,6 +110,7 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     fps = 60
     scores = 0
+    eva_1 = load_image('eva 100h.png')
 
     with open('best.txt', 'r') as b:
         best = int(b.readline().split()[0])
@@ -151,8 +152,8 @@ if __name__ == '__main__':
                 with open('best.txt', 'w') as b:
                     b.write('scores')
 
-
         screen.blit(fon, (0, 0))
+        screen.blit(eva_1, (173, 215))
         pygame.mixer.music.pause()
         pygame.draw.circle(screen, (0, 255, 0), (x_pos, 300), 20)
         x_pos -= 4
