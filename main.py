@@ -30,14 +30,14 @@ class Hero(pygame.sprite.Sprite):
         self.image = load_image('kaworu_with_head.png')
         self.rect = self.image.get_rect()
         self.rect.top = 200
-        self.dx = 4
-        self.dy = 4
+        self.dx = 6
+        self.dy = 5
 
     def up(self):
         self.rect.top -= self.dx
 
     def down(self):
-        self.rect.top += self.dx
+        self.rect.top += self.dx - 2
 
 
 def terminate():
@@ -111,6 +111,7 @@ if __name__ == '__main__':
     fps = 60
     scores = 0
     eva_1 = load_image('eva 100h.png')
+    eva_2 = load_image('eva 75h.png')
 
     with open('best.txt', 'r') as b:
         best = int(b.readline().split()[0])
@@ -153,7 +154,8 @@ if __name__ == '__main__':
                     b.write('scores')
 
         screen.blit(fon, (0, 0))
-        screen.blit(eva_1, (173, 215))
+        screen.blit(eva_1, (173, 215))  # эта и ниже - демонстрация Ев
+        screen.blit(eva_2, (273, 235))
         pygame.mixer.music.pause()
         pygame.draw.circle(screen, (0, 255, 0), (x_pos, 300), 20)
         x_pos -= 4
