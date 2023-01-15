@@ -2,10 +2,16 @@ import pygame
 import os
 import sys
 import random
+import time
+import datetime
 
 pygame.init()
 pygame.mixer.music.load("zst.mp3")
 fon = pygame.image.load('fon.PNG')
+
+timer = 0
+time_op = time.time_ns()
+time_start = (datetime.datetime.now() - datetime.datetime(1, 1, 1, 0, 0)).total_seconds()
 
 
 def load_image(name, colorkey=None):
@@ -35,9 +41,11 @@ class Hero(pygame.sprite.Sprite):
 
     def up(self):
         self.rect.top -= self.dx
+        self.image = load_image('kavoru_prygaet.png')
 
     def down(self):
         self.rect.top += self.dx - 2
+        self.image = load_image('kaworu_with_head.png')
 
 
 def terminate():
@@ -136,11 +144,11 @@ if __name__ == '__main__':
             if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
                 motion = 'STOP'
                 falling = True
-                scores += 1
 
         if nagito.rect.top >= 100:
             if not falling and motion == 'UP':
                 nagito.up()
+
         else:
             falling = True
         if falling:
@@ -154,11 +162,24 @@ if __name__ == '__main__':
                     b.write('scores')
 
         screen.blit(fon, (0, 0))
-        screen.blit(eva_1, (173, 215))  # эта и ниже - демонстрация Ев
-        screen.blit(eva_2, (273, 235))
-        pygame.mixer.music.pause()
-        pygame.draw.circle(screen, (0, 255, 0), (x_pos, 300), 20)
+        screen.blit(eva_1, (x_pos, 215))  # эта и ниже - демонстрация Ев
+        screen.blit(eva_2, (x_pos + 200, 235))
+        screen.blit(eva_2, (x_pos + 400, 235))
+        screen.blit(eva_1, (x_pos + 700, 215))
+        screen.blit(eva_1, (x_pos + 900, 215))  # эта и ниже - демонстрация Ев
+        screen.blit(eva_2, (x_pos + 1100, 235))
+        screen.blit(eva_2, (x_pos + 1300, 235))
+        screen.blit(eva_1, (x_pos + 1500, 215))
         x_pos -= 4
+
+        if scores > 20 and scores % 20 == 0:
+            fps += 1
+
+        if time_op - time_start % 5 == 0:
+            timer += 1
+            scores += int(timer)
+
+        pygame.mixer.music.pause()
         f1 = pygame.font.Font(None, 40)
         pygame.draw.line(screen, (255, 0, 0),
                          [0, 300],
