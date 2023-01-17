@@ -51,7 +51,6 @@ class Eva:
     def __init__(self, pos, type):
         self.image = load_image(type)
         self.x = pos
-        self.start = pos
         self.y = 235 if type == eva_s else 215
         self.dx = 4
 
