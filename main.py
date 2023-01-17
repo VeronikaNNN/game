@@ -1,12 +1,11 @@
 import pygame
 import os
 import sys
-import random
 import time
 import datetime
 
 pygame.init()
-pygame.mixer.music.load("zst.mp3")
+pygame.mixer.music.load("Neon Genesis Evangelion - A Cruel Angels Thesis.mp3")
 fon = pygame.image.load('fon.PNG')
 
 timer = 0
@@ -46,6 +45,21 @@ class Hero(pygame.sprite.Sprite):
     def down(self):
         self.rect.top += self.dx - 2
         self.image = load_image('kaworu_with_head.png')
+
+
+class Eva:
+    def __init__(self, pos, type):
+        self.image = load_image(type)
+        self.x = pos
+        self.start = pos
+        self.y = 235 if type == eva_s else 215
+        self.dx = 4
+
+    def move(self):
+        if self.x > -self.image.get_width():
+            self.x -= self.dx
+        else:
+            self.x = 1000
 
 
 def terminate():
@@ -118,8 +132,10 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     fps = 60
     scores = 0
-    eva_1 = load_image('eva 100h.png')
-    eva_2 = load_image('eva 75h.png')
+    eva_l = 'eva 100h.png'
+    eva_s = 'eva 75h.png'
+
+    evangelions = [Eva(1000, eva_s), Eva(1150, eva_l), Eva(1300, eva_l)]
 
     with open('best.txt', 'r') as b:
         best = int(b.readline().split()[0])
@@ -162,15 +178,21 @@ if __name__ == '__main__':
                     b.write('scores')
 
         screen.blit(fon, (0, 0))
-        screen.blit(eva_1, (x_pos, 215))  # эта и ниже - демонстрация Ев
-        screen.blit(eva_2, (x_pos + 200, 235))
-        screen.blit(eva_2, (x_pos + 400, 235))
-        screen.blit(eva_1, (x_pos + 700, 215))
-        screen.blit(eva_1, (x_pos + 900, 215))  # эта и ниже - демонстрация Ев
-        screen.blit(eva_2, (x_pos + 1100, 235))
-        screen.blit(eva_2, (x_pos + 1300, 235))
-        screen.blit(eva_1, (x_pos + 1500, 215))
-        x_pos -= 4
+        # screen.blit(eva_1, (x_pos, 215))  # эта и ниже - демонстрация Ев
+        # screen.blit(eva_2, (x_pos + 200, 235))
+        # screen.blit(eva_2, (x_pos + 400, 235))
+        # screen.blit(eva_1, (x_pos + 700, 215))
+        # screen.blit(eva_1, (x_pos + 900, 215))  # эта и ниже - демонстрация Ев
+        # screen.blit(eva_2, (x_pos + 1100, 235))
+        # screen.blit(eva_2, (x_pos + 1300, 235))
+        # screen.blit(eva_1, (x_pos + 1500, 215))
+        for eva in evangelions:
+            screen.blit(eva.image, (eva.x, eva.y))
+            eva.move()
+        if x_pos > -100:
+            x_pos -= 4
+        else:
+            x_pos = 1000
 
         if scores > 20 and scores % 20 == 0:
             fps += 1
