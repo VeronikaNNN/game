@@ -1,16 +1,10 @@
 import pygame
 import os
 import sys
-import time
-import datetime
 
 pygame.init()
 pygame.mixer.music.load("Neon Genesis Evangelion - A Cruel Angels Thesis.mp3")
 fon = pygame.image.load('fon.PNG')
-
-timer = 0
-time_op = time.time_ns()
-time_start = (datetime.datetime.now() - datetime.datetime(1, 1, 1, 0, 0)).total_seconds()
 
 
 def load_image(name, colorkey=None):
@@ -32,7 +26,8 @@ def load_image(name, colorkey=None):
 class Hero(pygame.sprite.Sprite):
     def __init__(self):
         super(Hero, self).__init__()
-        self.image = load_image('kaworu_with_head.png')
+        self.images = [load_image('kavoru_delaet_shag1.png'), load_image('delaet_vtoroy.png')]
+        self.image = self.images[0]
         self.rect = self.image.get_rect()
         self.rect.top = 200
         self.dx = 6
@@ -44,13 +39,14 @@ class Hero(pygame.sprite.Sprite):
 
     def down(self):
         self.rect.top += self.dx - 2
-        self.image = load_image('kaworu_with_head.png')
+        self.image = self.images[0]
 
 
 class Eva:
     def __init__(self, pos, type):
         self.image = load_image(type)
         self.x = pos
+        self.pos = pos
         self.y = 235 if type == eva_s else 215
         self.dx = 4
 
@@ -58,7 +54,7 @@ class Eva:
         if self.x > -self.image.get_width():
             self.x -= self.dx
         else:
-            self.x = 1000
+            self.x = 2825
 
 
 def terminate():
@@ -116,6 +112,10 @@ def start_screen():
         clock.tick(fps)
 
 
+def dead_screen():  # экран после смерти: счёт, Каору без головы
+    pass
+
+
 if __name__ == '__main__':
     pygame.init()
     size = WIDTH, HEIGHT = 1000, 500
@@ -126,15 +126,18 @@ if __name__ == '__main__':
                      [10, 30],
                      [290, 15], 3)
     all_sprites = pygame.sprite.Group()
-    nagito = Hero()
-    all_sprites.add(nagito)
+    Kaworu = Hero()
+    all_sprites.add(Kaworu)
     clock = pygame.time.Clock()
     fps = 60
     scores = 0
+    fps_cnt = 0
+    image_number = 0
     eva_l = 'eva 100h.png'
     eva_s = 'eva 75h.png'
 
-    evangelions = [Eva(1000, eva_s), Eva(1150, eva_l), Eva(1300, eva_l)]
+    evangelions = [Eva(1000, eva_s), Eva(1320, eva_l), Eva(1600, eva_l), Eva(1910, eva_s), Eva(2150, eva_s),
+                   Eva(2370, eva_l), Eva(2595, eva_s), Eva(2825, eva_l)]
 
     with open('best.txt', 'r') as b:
         best = int(b.readline().split()[0])
@@ -160,34 +163,31 @@ if __name__ == '__main__':
                 motion = 'STOP'
                 falling = True
 
-        if nagito.rect.top >= 100:
+        if Kaworu.rect.top >= 80:
             if not falling and motion == 'UP':
-                nagito.up()
+                Kaworu.up()
 
         else:
             falling = True
+
         if falling:
-            nagito.down()
-        if nagito.rect.top > 198:
+            Kaworu.down()
+        if Kaworu.rect.top > 198:
             falling = False
 
         if is_dead:
             if scores > best:
                 with open('best.txt', 'w') as b:
                     b.write('scores')
+            running = False
+            dead_screen()
 
         screen.blit(fon, (0, 0))
-        # screen.blit(eva_1, (x_pos, 215))  # эта и ниже - демонстрация Ев
-        # screen.blit(eva_2, (x_pos + 200, 235))
-        # screen.blit(eva_2, (x_pos + 400, 235))
-        # screen.blit(eva_1, (x_pos + 700, 215))
-        # screen.blit(eva_1, (x_pos + 900, 215))  # эта и ниже - демонстрация Ев
-        # screen.blit(eva_2, (x_pos + 1100, 235))
-        # screen.blit(eva_2, (x_pos + 1300, 235))
-        # screen.blit(eva_1, (x_pos + 1500, 215))
+
         for eva in evangelions:
             screen.blit(eva.image, (eva.x, eva.y))
             eva.move()
+
         if x_pos > -100:
             x_pos -= 4
         else:
@@ -196,9 +196,12 @@ if __name__ == '__main__':
         if scores > 20 and scores % 20 == 0:
             fps += 1
 
-        if time_op - time_start % 5 == 0:
-            timer += 1
-            scores += int(timer)
+        if fps_cnt % (fps // 2) == 0:
+            scores += 1
+
+        if fps_cnt % (fps // 4) == 0:
+            image_number = (image_number + 1) % 2
+            Kaworu.image = Kaworu.images[image_number]
 
         pygame.mixer.music.pause()
         f1 = pygame.font.Font(None, 40)
@@ -211,4 +214,5 @@ if __name__ == '__main__':
         pygame.display.update()
         pygame.display.flip()
         clock.tick(fps)
+        fps_cnt += 1
     terminate()
