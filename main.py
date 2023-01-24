@@ -23,13 +23,18 @@ def load_image(name, colorkey=None):
     return image
 
 
+def intersect(p11, p12, p21, p22):
+    return p11 <= p21 <= p12 or p21 <= p11 <= p22
+
+
 class Hero(pygame.sprite.Sprite):
     def __init__(self):
         super(Hero, self).__init__()
         self.images = [load_image('kavoru_delaet_shag1.png'), load_image('delaet_vtoroy.png')]
         self.image = self.images[0]
         self.rect = self.image.get_rect()
-        self.rect.top = 200
+        self.rect.top = 243
+        self.rect.left = 20
         self.dx = 6
         self.dy = 5
 
@@ -47,14 +52,14 @@ class Eva:
         self.image = load_image(type)
         self.x = pos
         self.pos = pos
-        self.y = 235 if type == eva_s else 215
+        self.y = 250 if type == eva_s else 230
         self.dx = 4
 
     def move(self):
         if self.x > -self.image.get_width():
             self.x -= self.dx
         else:
-            self.x = 2825
+            self.x = 2000
 
 
 def terminate():
@@ -163,7 +168,7 @@ if __name__ == '__main__':
                 motion = 'STOP'
                 falling = True
 
-        if Kaworu.rect.top >= 80:
+        if Kaworu.rect.top >= 113:
             if not falling and motion == 'UP':
                 Kaworu.up()
 
@@ -172,13 +177,20 @@ if __name__ == '__main__':
 
         if falling:
             Kaworu.down()
-        if Kaworu.rect.top > 198:
+        if Kaworu.rect.top > 240:
             falling = False
+
+        kaworu_h, kaworu_w = Kaworu.image.get_height(), Kaworu.image.get_width()
+        if any([intersect(Kaworu.rect.left, Kaworu.rect.left + kaworu_w, eva.x, eva.x + eva.image.get_width())
+                and intersect(Kaworu.rect.top, Kaworu.rect.top + kaworu_h, eva.y, eva.y + eva.image.get_height())
+                for eva in evangelions]):
+            is_dead = True
+            print('GAME OVER')
 
         if is_dead:
             if scores > best:
                 with open('best.txt', 'w') as b:
-                    b.write('scores')
+                    b.write(str(scores))
             running = False
             dead_screen()
 
