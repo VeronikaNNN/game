@@ -2,6 +2,7 @@ import pygame
 import os
 import sys
 
+
 pygame.init()
 pygame.mixer.music.load("Neon Genesis Evangelion - A Cruel Angels Thesis.mp3")
 fon = pygame.image.load('fon.PNG')
@@ -80,11 +81,11 @@ x_pos = 1000
 
 
 def start_screen():
-    intro_text = ['ВЕСЁЛЫЕ СТАРТЫ', '',
+    intro_text = ['KOWORU_RUN', '',
                   '', '',
                   f'РЕКОРД: {best}']
-
     fon = pygame.transform.scale(load_image('fon.jpg'), (WIDTH, HEIGHT))
+    pygame.mixer.music.load("Neon Genesis Evangelion - A Cruel Angels Thesis.mp3")
     pygame.mixer.music.play(-1)
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
@@ -99,7 +100,6 @@ def start_screen():
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
     # draw_start('white')
-
     while True:
         for event in pygame.event.get():
             cursor_x, cursor_y = pygame.mouse.get_pos()
@@ -109,7 +109,6 @@ def start_screen():
                 draw_start('white')
             if event.type == pygame.QUIT:
                 terminate()
-
             elif event.type == pygame.MOUSEBUTTONDOWN and \
                     start[0] <= event.pos[0] <= start[2] and start[1] <= event.pos[1] <= start[3]:
                 return  # начинаем игру
@@ -118,14 +117,41 @@ def start_screen():
 
 
 def dead_screen():  # экран после смерти: счёт, Каору без головы
-    pass
+    intro_text = ['       KOWORU_RUN', '',
+                  '     ИГРА ОКОНЧЕНА', '',
+                  f'           СЧЁТ: {scores}', '',
+                  '', '',
+                  '', '',
+                  '', '',
+                  '',
+                  'для выхода нажмите пробел']
+    fon = pygame.transform.scale(load_image('posl.jpg'), (WIDTH, HEIGHT))
+    pygame.mixer.music.load("500412-guillotine_cut_-execution_be-heading.mp3")
+    pygame.mixer.music.play(0)
+    screen.blit(fon, (0, 0))
+    font = pygame.font.Font(None, 30)
+    text_coord = 70
+    for line in intro_text:
+        strin_rendered = font.render(line, 0, pygame.Color('white'))
+        stop_rect = strin_rendered.get_rect()
+        text_coord += 10
+        stop_rect.top = text_coord
+        stop_rect.x = 400
+        text_coord += stop_rect.height
+        screen.blit(strin_rendered, stop_rect)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN: #при нажатии на пробел - выход
+                pygame.quit()
+                quit()
+        pygame.display.flip()
 
 
 if __name__ == '__main__':
     pygame.init()
     size = WIDTH, HEIGHT = 1000, 500
     screen = pygame.display.set_mode(size)
-    pygame.display.set_caption('Весёлые старты')
+    pygame.display.set_caption('Koworu_run')
     screen.blit(fon, (0, 0))
     pygame.draw.line(screen, (255, 255, 255),
                      [10, 30],
@@ -140,30 +166,22 @@ if __name__ == '__main__':
     image_number = 0
     eva_l = 'eva 100h.png'
     eva_s = 'eva 75h.png'
-
     evangelions = [Eva(1000, eva_s), Eva(1320, eva_l), Eva(1600, eva_l), Eva(1910, eva_s), Eva(2150, eva_s),
                    Eva(2370, eva_l), Eva(2595, eva_s), Eva(2825, eva_l)]
-
     with open('best.txt', 'r') as b:
         best = int(b.readline().split()[0])
-
     start_screen()
     pygame.mouse.set_visible(False)
-
     motion = False
     falling = False
     running = True
     is_dead = False
-
     while running:
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 motion = 'UP'
-
             if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
                 motion = 'STOP'
                 falling = True
@@ -171,7 +189,6 @@ if __name__ == '__main__':
         if Kaworu.rect.top >= 113:
             if not falling and motion == 'UP':
                 Kaworu.up()
-
         else:
             falling = True
 
@@ -185,7 +202,6 @@ if __name__ == '__main__':
                 and intersect(Kaworu.rect.top, Kaworu.rect.top + kaworu_h, eva.y, eva.y + eva.image.get_height())
                 for eva in evangelions]):
             is_dead = True
-            print('GAME OVER')
 
         if is_dead:
             if scores > best:
@@ -195,26 +211,20 @@ if __name__ == '__main__':
             dead_screen()
 
         screen.blit(fon, (0, 0))
-
         for eva in evangelions:
             screen.blit(eva.image, (eva.x, eva.y))
             eva.move()
-
         if x_pos > -100:
             x_pos -= 4
         else:
             x_pos = 1000
-
         if scores > 20 and scores % 20 == 0:
             fps += 1
-
         if fps_cnt % (fps // 2) == 0:
             scores += 1
-
         if fps_cnt % (fps // 4) == 0:
             image_number = (image_number + 1) % 2
             Kaworu.image = Kaworu.images[image_number]
-
         pygame.mixer.music.pause()
         f1 = pygame.font.Font(None, 40)
         pygame.draw.line(screen, (255, 0, 0),
