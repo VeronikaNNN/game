@@ -4,7 +4,6 @@ import sys
 
 
 pygame.init()
-pygame.mixer.music.load("Neon Genesis Evangelion - A Cruel Angels Thesis.mp3")
 fon = pygame.image.load('fon.PNG')
 
 
@@ -79,14 +78,15 @@ def draw_start(color):
 
 x_pos = 1000
 
+v = pygame.mixer.Sound("Neon Genesis Evangelion - A Cruel Angels Thesis.mp3")
+
 
 def start_screen():
     intro_text = ['KOWORU_RUN', '',
                   '', '',
                   f'РЕКОРД: {best}']
     fon = pygame.transform.scale(load_image('fon.jpg'), (WIDTH, HEIGHT))
-    pygame.mixer.music.load("Neon Genesis Evangelion - A Cruel Angels Thesis.mp3")
-    pygame.mixer.music.play(-1)
+    v.play()
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
     text_coord = 50
@@ -126,6 +126,7 @@ def dead_screen():  # экран после смерти: счёт, Каору �
                   '',
                   'для выхода нажмите пробел']
     fon = pygame.transform.scale(load_image('posl.jpg'), (WIDTH, HEIGHT))
+    s.stop()
     pygame.mixer.music.load("500412-guillotine_cut_-execution_be-heading.mp3")
     pygame.mixer.music.play(0)
     screen.blit(fon, (0, 0))
@@ -145,6 +146,9 @@ def dead_screen():  # экран после смерти: счёт, Каору �
                 pygame.quit()
                 quit()
         pygame.display.flip()
+
+
+s = pygame.mixer.Sound("Angel_Attack.mp3")
 
 
 if __name__ == '__main__':
@@ -225,13 +229,14 @@ if __name__ == '__main__':
         if fps_cnt % (fps // 4) == 0:
             image_number = (image_number + 1) % 2
             Kaworu.image = Kaworu.images[image_number]
-        pygame.mixer.music.pause()
         f1 = pygame.font.Font(None, 40)
         pygame.draw.line(screen, (255, 0, 0),
                          [0, 300],
                          [1000, 300], 4)
         text1 = f1.render('Счёт: ' + str(scores), True, (255, 255, 255))
         screen.blit(text1, (430, 50))
+        v.stop()
+        s.play()
         all_sprites.draw(screen)
         pygame.display.update()
         pygame.display.flip()
