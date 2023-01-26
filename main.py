@@ -148,7 +148,6 @@ def dead_screen():  # экран после смерти: счёт, Каору �
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:  # при нажатии на пробел - выход
                 pygame.quit()
-                quit()
         pygame.display.flip()
 
 
