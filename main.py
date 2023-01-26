@@ -2,9 +2,7 @@ import pygame
 import os
 import sys
 
-
 pygame.init()
-pygame.mixer.music.load("Neon Genesis Evangelion - A Cruel Angels Thesis.mp3")
 fon = pygame.image.load('fon.PNG')
 
 
@@ -81,7 +79,8 @@ x_pos = 1000
 
 
 def start_screen():
-    intro_text = ['KOWORU_RUN', '',
+    global Angel
+    intro_text = ['KAWORU_RUN', '',
                   '', '',
                   f'РЕКОРД: {best}']
     fon = pygame.transform.scale(load_image('fon.jpg'), (WIDTH, HEIGHT))
@@ -99,7 +98,7 @@ def start_screen():
         intro_rect.x = 400
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
-    # draw_start('white')
+
     while True:
         for event in pygame.event.get():
             cursor_x, cursor_y = pygame.mouse.get_pos()
@@ -111,13 +110,15 @@ def start_screen():
                 terminate()
             elif event.type == pygame.MOUSEBUTTONDOWN and \
                     start[0] <= event.pos[0] <= start[2] and start[1] <= event.pos[1] <= start[3]:
+
+                Angel = True
                 return  # начинаем игру
             pygame.display.flip()
         clock.tick(fps)
 
 
 def dead_screen():  # экран после смерти: счёт, Каору без головы
-    intro_text = ['       KOWORU_RUN', '',
+    intro_text = ['       KAWORU_RUN', '',
                   '     ИГРА ОКОНЧЕНА', '',
                   f'           СЧЁТ: {scores}', '',
                   '', '',
@@ -125,10 +126,12 @@ def dead_screen():  # экран после смерти: счёт, Каору �
                   '', '',
                   '',
                   'для выхода нажмите пробел']
+    s.stop()
     fon = pygame.transform.scale(load_image('posl.jpg'), (WIDTH, HEIGHT))
-    pygame.mixer.music.load("500412-guillotine_cut_-execution_be-heading.mp3")
+    pygame.mixer.music.load("Death.mp3")
     pygame.mixer.music.play(0)
     screen.blit(fon, (0, 0))
+    screen.blit(load_image('kaworu_without_head.png'), (450, 200))
     font = pygame.font.Font(None, 30)
     text_coord = 70
     for line in intro_text:
@@ -137,21 +140,25 @@ def dead_screen():  # экран после смерти: счёт, Каору �
         text_coord += 10
         stop_rect.top = text_coord
         stop_rect.x = 400
+        if line == 'для выхода нажмите пробел':
+            stop_rect.x = 360
         text_coord += stop_rect.height
         screen.blit(strin_rendered, stop_rect)
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN: #при нажатии на пробел - выход
+            if event.type == pygame.KEYDOWN:  # при нажатии на пробел - выход
                 pygame.quit()
                 quit()
         pygame.display.flip()
 
 
+s = pygame.mixer.Sound("Angel_Attack.mp3")
+
 if __name__ == '__main__':
     pygame.init()
     size = WIDTH, HEIGHT = 1000, 500
     screen = pygame.display.set_mode(size)
-    pygame.display.set_caption('Koworu_run')
+    pygame.display.set_caption('Kaworu_run')
     screen.blit(fon, (0, 0))
     pygame.draw.line(screen, (255, 255, 255),
                      [10, 30],
@@ -171,11 +178,13 @@ if __name__ == '__main__':
     with open('best.txt', 'r') as b:
         best = int(b.readline().split()[0])
     start_screen()
-    pygame.mouse.set_visible(False)
+    s.play()
+
     motion = False
     falling = False
     running = True
     is_dead = False
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
